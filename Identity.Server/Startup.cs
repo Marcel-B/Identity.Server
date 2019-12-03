@@ -79,14 +79,15 @@ namespace Identity.Servier
 
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 context.Database.Migrate();
-                //if (!context.Clients.Any())
-                //{
-                //    foreach (var client in Config.Clients)
-                //    {
-                //        context.Clients.Add(client.ToEntity());
-                //    }
-                //    context.SaveChanges();
-                //}
+
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in Config.Clients)
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
 
                 //if (!context.IdentityResources.Any())
                 //{

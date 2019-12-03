@@ -27,5 +27,16 @@ namespace com.b_velop.Identity.Server
                         }
                     }
              };
+
+        public static IEnumerable<Client> Clients =>
+        new List<Client>
+        {
+            new Client{
+                ClientId = "slipways.ios",
+                ClientName = "slipways ios appication",
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                AllowedScopes = { "slipways.api.reader" }
+            }
+        };
     }
 }
