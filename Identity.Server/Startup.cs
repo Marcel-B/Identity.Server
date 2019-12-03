@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,27 @@ namespace Identity.Servier
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = "";
+#if DEBUG
+            connectionString = "Server=localhost,1433;Database=Identity;User Id=sa;Password=foo123bar!";
+#endif
+            var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
+            var builder =  services.AddIdentityServer()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                    builder.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    // this enables automatic token cleanup. this is optional.
+                    //options.EnableTokenCleanup = true;
+                    //options.TokenCleanupInterval = 30; // interval in seconds
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                });
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -28,17 +50,18 @@ namespace Identity.Servier
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseIdentityServer();
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllers();
             });
         }
+
         private void InitializeDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
