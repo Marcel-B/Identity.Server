@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
+using IdentityServer4.EntityFramework.Entities;
+using com.b_velop.Identity.Server;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace Identity.Servier
 {
@@ -29,7 +33,7 @@ namespace Identity.Servier
 #endif
 
             var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
-            var builder =  services.AddIdentityServer()
+            var builder = services.AddIdentityServer()
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
@@ -93,14 +97,14 @@ namespace Identity.Servier
                 //    context.SaveChanges();
                 //}
 
-                //if (!context.ApiResources.Any())
-                //{
-                //    foreach (var resource in Config.Apis)
-                //    {
-                //        context.ApiResources.Add(resource.ToEntity());
-                //    }
-                //    context.SaveChanges();
-                //}
+                if (!context.ApiResources.Any())
+                {
+                    foreach (var resource in Config.Apis)
+                    {
+                        context.ApiResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
             }
         }
     }
