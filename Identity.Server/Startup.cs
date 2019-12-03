@@ -33,7 +33,10 @@ namespace Identity.Servier
 #endif
 
             var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
-            var builder = services.AddIdentityServer()
+            var builder = services.AddIdentityServer(options =>
+            {
+                options.PublicOrigin = "https://identity.qaybe.de";
+            })
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
@@ -44,16 +47,20 @@ namespace Identity.Servier
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30; // interval in seconds
-
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddDeveloperSigningCredential();
+            
+
+           
             services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env)
         {
             InitializeDatabase(app);
             if (env.IsDevelopment())
