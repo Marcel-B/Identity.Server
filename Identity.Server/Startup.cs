@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace Identity.Servier
 {
@@ -20,22 +17,30 @@ namespace Identity.Servier
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = "";
+            var pw = Environment.GetEnvironmentVariable("PASSWORD");
+            var user = Environment.GetEnvironmentVariable("USER");
+            var db = Environment.GetEnvironmentVariable("DB");
+            var server = Environment.GetEnvironmentVariable("SERVER");
+
+            connectionString = $"Server={server},1433;Database={db};User Id={user};Password={pw}";
+
 #if DEBUG
             connectionString = "Server=localhost,1433;Database=Identity;User Id=sa;Password=foo123bar!";
 #endif
+
             var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
             var builder =  services.AddIdentityServer()
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
                     builder.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
-
-                    // this enables automatic token cleanup. this is optional.
-                    //options.EnableTokenCleanup = true;
-                    //options.TokenCleanupInterval = 30; // interval in seconds
                 })
                 .AddOperationalStore(options =>
                 {
+                    // this enables automatic token cleanup. this is optional.
+                    options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30; // interval in seconds
+
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 });
