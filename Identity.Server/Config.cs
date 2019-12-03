@@ -38,5 +38,12 @@ namespace com.b_velop.Identity.Server
                 AllowedScopes = { "slipways.api.reader" }
             }
         };
+
+        public static IEnumerable<IdentityResource> Ids =>
+            new List<IdentityResource>
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile()
+            };
     }
 }

@@ -47,7 +47,8 @@ namespace Identity.Servier
 
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
-                });
+                })
+                .AddDeveloperSigningCredential();
             services.AddControllers();
         }
 
@@ -89,14 +90,14 @@ namespace Identity.Servier
                     context.SaveChanges();
                 }
 
-                //if (!context.IdentityResources.Any())
-                //{
-                //    foreach (var resource in Config.Ids)
-                //    {
-                //        context.IdentityResources.Add(resource.ToEntity());
-                //    }
-                //    context.SaveChanges();
-                //}
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var resource in Config.Ids)
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
 
                 if (!context.ApiResources.Any())
                 {
