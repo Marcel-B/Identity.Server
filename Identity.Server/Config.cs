@@ -36,7 +36,25 @@ namespace com.b_velop.Identity.Server
                 ClientName = "slipways ios appication",
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                 AllowedScopes = { "slipways.api.reader" }
-            }
+            },
+            new Client{
+                ClientId = "slipways.web",
+                ClientName = "slipways web client",
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                AllowedScopes = { "slipways.api.allaccess" }
+            },
+            new Client{
+                ClientId = "slipways.android",
+                ClientName = "slipways android client",
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                AllowedScopes = { "slipways.api.reader" }
+            },
+            new Client{
+                ClientId = "slipways.graphql",
+                ClientName = "slipways graphql client",
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                AllowedScopes = { "slipways.api.reader" }
+            },
         };
 
         public static IEnumerable<IdentityResource> Ids =>
