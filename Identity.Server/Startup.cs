@@ -51,9 +51,9 @@ namespace Identity.Servier
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddDeveloperSigningCredential();
-            
 
-           
+
+
             services.AddControllers();
         }
 
@@ -88,14 +88,12 @@ namespace Identity.Servier
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 context.Database.Migrate();
 
-                if (!context.Clients.Any())
+                foreach (var client in Config.Clients)
                 {
-                    foreach (var client in Config.Clients)
-                    {
+                    if (context.Clients.FirstOrDefault(_ => _.ClientId == client.ClientId) == null)
                         context.Clients.Add(client.ToEntity());
-                    }
-                    context.SaveChanges();
                 }
+                context.SaveChanges();
 
                 if (!context.IdentityResources.Any())
                 {
