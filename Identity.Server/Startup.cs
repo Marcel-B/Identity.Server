@@ -11,6 +11,7 @@ using System.Linq;
 using IdentityServer4.EntityFramework.Entities;
 using com.b_velop.Identity.Server;
 using IdentityServer4.EntityFramework.Mappers;
+using com.b_velop.Identity.Server.Infrastructure;
 
 namespace Identity.Servier
 {
@@ -21,11 +22,12 @@ namespace Identity.Servier
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = "";
-            var pw = Environment.GetEnvironmentVariable("PASSWORD");
             var user = Environment.GetEnvironmentVariable("USER");
             var db = Environment.GetEnvironmentVariable("DB");
             var server = Environment.GetEnvironmentVariable("SERVER");
 
+            var secretProvider = new SecretProvider();
+            var pw = secretProvider.GetSecret("sqlserver");
             connectionString = $"Server={server},1433;Database={db};User Id={user};Password={pw}";
 
 #if DEBUG
