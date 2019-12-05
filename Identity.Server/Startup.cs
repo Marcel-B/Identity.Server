@@ -33,9 +33,9 @@ namespace Identity.Servier
 
             var secretProvider = new SecretProvider();
             var pw = secretProvider.GetSecret("sqlserver");
-            var key = secretProvider.GetSecret("key");
+            var key = secretProvider.GetSecret("cert_pw");
 
-            var cert = new X509Certificate2("/app/Keys/identity_rsa", key);
+            //var cert = new X509Certificate2("/app/Keys/server.pfx", key);
 
             connectionString = $"Server={server},1433;Database={db};User Id={user};Password={pw}";
 
@@ -61,7 +61,7 @@ namespace Identity.Servier
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
-                .AddSigningCredential(cert);
+                .AddDeveloperSigningCredential();
 
             services.AddControllers();
         }

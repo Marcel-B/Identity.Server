@@ -31,16 +31,8 @@
     <Folder Include="Keys\" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Keys\identity_rsa" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="Keys\identity_rsa">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Keys\identity_rsa">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 </Project>
