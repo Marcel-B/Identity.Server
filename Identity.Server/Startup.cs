@@ -13,6 +13,10 @@ using com.b_velop.Identity.Server;
 using IdentityServer4.EntityFramework.Mappers;
 using com.b_velop.Identity.Server.Infrastructure;
 using Prometheus;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.IdentityModel.Tokens;
+using System.IO;
+using System.Text;
 
 namespace Identity.Servier
 {
@@ -29,6 +33,9 @@ namespace Identity.Servier
 
             var secretProvider = new SecretProvider();
             var pw = secretProvider.GetSecret("sqlserver");
+            var key = secretProvider.GetSecret("key");
+
+            var cert = new X509Certificate2("/app/Keys/identity_rsa", key);
 
             connectionString = $"Server={server},1433;Database={db};User Id={user};Password={pw}";
 
@@ -54,9 +61,7 @@ namespace Identity.Servier
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
-                .AddDeveloperSigningCredential();
-
-
+                .AddSigningCredential(cert);
 
             services.AddControllers();
         }
@@ -98,7 +103,7 @@ namespace Identity.Servier
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                        serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 context.Database.Migrate();
