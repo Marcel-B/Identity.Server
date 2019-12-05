@@ -330,3 +330,4 @@ ASALocalRun/
 .mfractor/
 
 Identity.Server/Keys/identity_rsa
+.DS_Store
