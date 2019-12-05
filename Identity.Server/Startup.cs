@@ -12,6 +12,7 @@ using IdentityServer4.EntityFramework.Entities;
 using com.b_velop.Identity.Server;
 using IdentityServer4.EntityFramework.Mappers;
 using com.b_velop.Identity.Server.Infrastructure;
+using Prometheus;
 
 namespace Identity.Servier
 {
@@ -65,6 +66,17 @@ namespace Identity.Servier
             IWebHostEnvironment env)
         {
             InitializeDatabase(app);
+            app.UseHttpMetrics(options =>
+            {
+                options.RequestCount.Enabled = false;
+
+                options.RequestDuration.Histogram = Metrics.CreateHistogram("identity_http_request_duration_seconds", "",
+                    new HistogramConfiguration
+                    {
+                        Buckets = Histogram.LinearBuckets(start: 1, width: 1, count: 64),
+                        LabelNames = new[] { "code", "method" }
+                    });
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
