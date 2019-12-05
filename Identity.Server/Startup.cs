@@ -29,6 +29,7 @@ namespace Identity.Servier
 
             var secretProvider = new SecretProvider();
             var pw = secretProvider.GetSecret("sqlserver");
+            Console.WriteLine(pw);
             connectionString = $"Server={server},1433;Database={db};User Id={user};Password={pw}";
 
 #if DEBUG
