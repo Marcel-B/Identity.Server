@@ -12,6 +12,10 @@ namespace Identity.Server.Controllers
             Hash hash)
             => new OkObjectResult(hash.Password.Sha256());
 
+        [HttpGet]
+        public ActionResult HealthStatus()
+            => Ok();
+
         public class Hash
         {
             public string Password { get; set; }
