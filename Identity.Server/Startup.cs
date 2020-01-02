@@ -1,6 +1,5 @@
 using System.Reflection;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
-using IdentityServer4.EntityFramework.Entities;
 using com.b_velop.Identity.Server;
 using IdentityServer4.EntityFramework.Mappers;
 using com.b_velop.Identity.Server.Infrastructure;
 using Prometheus;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.IdentityModel.Tokens;
-using System.IO;
-using System.Text;
 
 namespace Identity.Servier
 {
@@ -103,7 +97,7 @@ namespace Identity.Servier
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                        serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 context.Database.Migrate();
